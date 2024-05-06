@@ -48,14 +48,15 @@ public class User implements UserDetails, Principal {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Subscription> subscription;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role));
     }
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<Subscription> subscription;
+
     @Override
     public String getPassword() {
         return password;

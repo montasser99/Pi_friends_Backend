@@ -4,11 +4,13 @@ import com.Parking.GestionParking.entities.Comments;
 import com.Parking.GestionParking.entities.Poste;
 import com.Parking.GestionParking.repository.ICommentRepository;
 import com.Parking.GestionParking.repository.IPosteRepository; // Import de IPosteRepository
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GestionCommentsImpl implements IGestionComments {
@@ -25,7 +27,18 @@ public class GestionCommentsImpl implements IGestionComments {
         if (contientMotsSensibles(comments.getContent()) || contientMotsSensibles(comments.getDescription())) {
             throw new IllegalArgumentException("Le contenu ou la description contient des mots sensibles.");
         }
-        return commentRepo.save(comments);
+
+        // Fetch the Poste entity from the database
+        Optional<Poste> optionalPoste = posteRepo.findById(comments.getPoste().getIdPoste());
+        if (optionalPoste.isPresent()) {
+            // If the Poste exists, associate it with the Comments entity
+            comments.setPoste(optionalPoste.get());
+            // Save the Comments entity
+            return commentRepo.save(comments);
+        } else {
+            // Handle the case when the Poste doesn't exist
+            throw new EntityNotFoundException("Poste with ID " + comments.getPoste().getIdPoste() + " not found");
+        }
     }
 
     @Override
