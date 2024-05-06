@@ -57,7 +57,9 @@ public class SecurityConfig {
                                         "/subscription/**",
                                         "/poste/**",
                                         "/comments/**",
-                                        "/parking/**"
+                                        "/parking/**",
+                                        "/reclamation/**",
+                                        "/feedback/**"
 
 
                                 )
