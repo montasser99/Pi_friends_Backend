@@ -56,4 +56,25 @@ public class EmailServiceImpl implements EmailService {
             e.printStackTrace(); // Handle exception properly
         }
     }
+
+    @Override
+    public void sendFeedbackEmail(String toEmail, String feedbackDescription) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setTo(toEmail);
+            helper.setFrom(fromEmail);
+            helper.setSubject("Feedback Submitted");
+
+            String emailContent = "Dear User,\n\n"
+                    + "Thank you for your feedback. We have received the following message:\n\n"
+                    + feedbackDescription + "\n\n"
+                    + "We appreciate your input!";
+            helper.setText(emailContent);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace(); // Handle exception properly
+        }
+    }
+
 }

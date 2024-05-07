@@ -1,5 +1,6 @@
 package com.Parking.GestionParking.services;
 
+import com.Parking.GestionParking.email.EmailService;
 import com.Parking.GestionParking.repository.IFeedbackRepository;
 import com.Parking.GestionParking.entities.Feedback;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,18 @@ public class GestionFeebackImpl implements IGestionFeedback {
     @Autowired
     IFeedbackRepository iFeedbackRepository;
 
+    @Autowired
+    private EmailService emailService; // Inject the EmailService
+
     @Override
     public Feedback addFeedback(Feedback feedback) {
-        return iFeedbackRepository.save(feedback);
+        Feedback savedFeedback = iFeedbackRepository.save(feedback); // Save the feedback first
+        // Send email to the provided email address
+        emailService.sendFeedbackEmail(feedback.getEmail(), feedback.getDescription());
+        return savedFeedback; // Return the saved feedback
     }
+
+
 
     @Override
     public List<Feedback> retrieveAllFeedback() {
